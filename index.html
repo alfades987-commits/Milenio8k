@@ -4,57 +4,70 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>GLYSTV</title>
-<meta name="theme-color" content="#4f46e5">
+<meta name="theme-color" content="#0ea5e9">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="IPTV">
+<meta name="apple-mobile-web-app-title" content="GLYSTV">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
-:root{--bg:#f6f7f9;--card:#fff;--tx:#14171c;--mu:#6b7380;--ac:#4f46e5;--bd:#dfe3e8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#1a1d24;--tx:#eceff4;--mu:#9aa3b2;--ac:#8b86ff;--bd:#2a2e37}}
-:root[data-theme="dark"]{--bg:#0f1115;--card:#1a1d24;--tx:#eceff4;--mu:#9aa3b2;--ac:#8b86ff;--bd:#2a2e37}
+:root{--bg:#0f1115;--card:#ffffff;--tx:#14171c;--mu:#6b7380;--ac:#0ea5e9;--bd:#dfe3e8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#1a1d24;--tx:#eceff4;--mu:#9aa3b2;--ac:#38bdf8;--bd:#2a2e37}}
+:root[data-theme="dark"]{--bg:#0f1115;--card:#1a1d24;--tx:#eceff4;--mu:#9aa3b2;--ac:#38bdf8;--bd:#2a2e37}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-main{max-width:900px;margin:0 auto;padding:12px}
-h1{font-size:20px;margin:4px 0 12px}
-video{width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;display:block}
-#now{margin:8px 2px;color:var(--mu);font-size:14px;min-height:20px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-top:12px}
-textarea,input[type=search]{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:10px;font:inherit}
+main{max-width:900px;margin:0 auto;padding:16px}
+
+/* Estilo de logotipo y cabecera centralizada */
+.brand-header{text-align:center;margin:20px 0 10px}
+.brand-header img{width:110px;height:110px;object-fit:contain;border-radius:24px;box-shadow:0 8px 24px rgba(0,0,0,0.3);background:#1a1d24;padding:8px;margin-bottom:8px}
+.brand-header h1{font-size:24px;margin:0;color:#fff;letter-spacing:0.5px}
+
+video{width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;display:block;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
+#now{margin:10px 2px;color:var(--mu);font-size:14px;min-height:20px;text-align:center}
+
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-top:16px;box-shadow:0 4px 20px rgba(0,0,0,0.15)}
+textarea,input[type=search]{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:12px;font:inherit}
 textarea{height:90px;resize:vertical}
-.row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-button,.btn{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:10px 14px;font:inherit;cursor:pointer}
+.row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+button,.btn{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:12px 18px;font:inherit;cursor:pointer;font-weight:600;transition:opacity 0.2s}
+button:hover,.btn:hover{opacity:0.9}
 button.sec,.btn.sec{background:transparent;color:var(--ac);border:1px solid var(--ac)}
-#list{margin-top:8px;max-height:50vh;overflow-y:auto}
-.ch{display:flex;align-items:center;gap:10px;padding:10px 6px;border-bottom:1px solid var(--bd);cursor:pointer}
+#list{margin-top:10px;max-height:50vh;overflow-y:auto}
+.ch{display:flex;align-items:center;gap:12px;padding:12px 8px;border-bottom:1px solid var(--bd);cursor:pointer;border-radius:8px;transition:background 0.15s}
+.ch:hover{background:rgba(14, 165, 233, 0.05)}
 .ch:last-child{border:0}
 .ch.on{color:var(--ac);font-weight:600}
-.ch img{width:32px;height:32px;object-fit:contain;border-radius:6px;background:var(--bg)}
+.ch img{width:36px;height:36px;object-fit:contain;border-radius:8px;background:var(--bg)}
 .ch span.g{margin-left:auto;color:var(--mu);font-size:12px}
-#msg{color:var(--mu);font-size:13px;margin-top:6px}
+#msg{color:var(--mu);font-size:13px;margin-top:8px;text-align:center}
 </style>
 </head>
 <body>
 <main>
-<h1>📺 GLYSTV</h1>
-<video id="v" controls playsinline autoplay></video>
-<div id="now">Selecciona un canal para empezar</div>
-
-<div class="card">
-  <textarea id="txt" placeholder="Pega aquí el contenido de tu lista M3U (#EXTM3U ...)"></textarea>
-  <div class="row">
-    <button id="load">Cargar lista</button>
-    <label class="btn sec">Subir archivo .m3u<input id="file" type="file" accept=".m3u,.m3u8,.txt" hidden></label>
+  <!-- Cabecera con Logotipo y Título Estilizado -->
+  <div class="brand-header">
+    <img src="icons/icon-512.png" alt="GLYSTV Logo">
+    <h1>GLYSTV</h1>
   </div>
-  <div id="msg">Usa solo listas y canales a los que tengas derecho legal de acceso.</div>
-</div>
 
-<div class="card">
-  <input id="q" type="search" placeholder="Buscar canal o grupo…">
-  <div id="list"></div>
-</div>
+  <video id="v" controls playsinline autoplay></video>
+  <div id="now">Selecciona un canal para empezar</div>
+
+  <div class="card">
+    <textarea id="txt" placeholder="Pega aquí el contenido de tu lista M3U (#EXTM3U ...)"></textarea>
+    <div class="row">
+      <button id="load" style="flex:1;">Cargar lista</button>
+      <label class="btn sec" style="flex:1; text-align:center;">Subir archivo .m3u<input id="file" type="file" accept=".m3u,.m3u8,.txt" hidden></label>
+    </div>
+    <div id="msg">Usa solo listas y canales a los que tengas derecho legal de acceso.</div>
+  </div>
+
+  <div class="card">
+    <input id="q" type="search" placeholder="Buscar canal o grupo…">
+    <div id="list"></div>
+  </div>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.8/hls.min.js"></script>
@@ -87,7 +100,7 @@ function render(){
       (c.logo?'<img loading="lazy" alt="" src="'+esc(c.logo)+'">':'<img alt="">')+
       '<div>'+esc(c.name)+'</div><span class="g">'+esc(c.group)+'</span></div>';
   });
-  $('list').innerHTML=h||'<div style="color:var(--mu);padding:8px">Sin canales todavía.</div>';
+  $('list').innerHTML=h||'<div style="color:var(--mu);padding:12px;text-align:center;">Sin canales todavía.</div>';
 }
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 
