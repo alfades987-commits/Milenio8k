@@ -1,0 +1,21 @@
+GLYSTV - PWA
+
+Contenido: index.html, manifest.json, sw.js, icons/
+
+PUBLICAR (gratis):
+1) Netlify: entra en app.netlify.com/drop y arrastra esta carpeta (descomprimida).
+2) GitHub Pages: sube los archivos a un repositorio y activa Pages en Settings.
+Una PWA solo se instala si se sirve por HTTPS (ambos lo dan).
+
+INSTALAR:
+- Android/Chrome: menu -> Instalar app.
+- iPhone/Safari: Compartir -> Anadir a pantalla de inicio.
+- Escritorio (Chrome/Edge): icono de instalar en la barra de direcciones.
+
+Para actualizar la app cambia el nombre de CACHE en sw.js (ej. iptv-v2).
+Usa solo listas y canales a los que tengas derecho legal de acceso.
+
+NUEVO (v2): pantalla de login (Usuario / Contrasena).
+- Abre index.html y en la linea  var SERVER = "";  escribe la direccion de tu servicio (formato Xtream), p. ej. "http://tu-servidor.com:8080". Si la dejas vacia, el login pedira el servidor.
+- Para poner tu logo, guarda una imagen como logo.png junto a index.html (usa solo un logo del que tengas derechos).
+- Si el servicio no permite conexiones desde el navegador (CORS), el login fallara; en ese caso usa "Usar una lista M3U manualmente".
