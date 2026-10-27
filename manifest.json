@@ -1,6 +1,6 @@
 {
-  "name": "Mi reproductor IPTV",
-  "short_name": "IPTV",
+  "name": "GLYSTV",
+  "short_name": "GLYSTV",
   "description": "Reproductor de listas M3U y streams HLS",
   "start_url": "./index.html",
   "scope": "./",
