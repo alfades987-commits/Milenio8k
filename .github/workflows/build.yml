@@ -18,7 +18,7 @@ jobs:
           distribution: temurin
           java-version: 17
       - run: npm install
-      - run: bash build-glystv.sh
+      - run: bash build-glystv-v3.sh
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: apk-${{ github.run_number }}
