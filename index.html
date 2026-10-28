@@ -15,12 +15,12 @@
 <style>
 :root{--bg:#08090c;--card:#111216;--tx:#f5f5f5;--mu:#a7a7ad;--ac:#e50914;--bd:#303036;--sub:#15161b;--gold:#d7ad55;--red:#e50914}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;min-height:100%}
-body{background:radial-gradient(ellipse at 50% -15%,#321013 0%,#0b0b0e 42%,#07080a 100%);color:#f4f4f5;font:14px/1.4 Poppins,system-ui,sans-serif;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+html,body{margin:0;height:100%;overflow:hidden}
+body{background:radial-gradient(ellipse at 50% -15%,#321013 0%,#0b0b0e 42%,#07080a 100%);color:#f4f4f5;font:13px/1.4 Poppins,system-ui,sans-serif}
 .hide{display:none!important}
 
 /* LOGIN */
-#login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;gap:24px}
+#login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;gap:24px;overflow-y:auto}
 .logo text-align:center}
 .logo img{max-width:320px;filter:drop-shadow(0 0 20px rgba(229,9,20,.18))}
 .logo .t{font-size:56px;font-weight:700;line-height:1;background:linear-gradient(180deg,#ffe4a0,#c99a38);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -34,20 +34,21 @@ body{background:radial-gradient(ellipse at 50% -15%,#321013 0%,#0b0b0e 42%,#0708
 #err{color:#ff7b82;font-size:14px;margin-top:10px;text-align:center;min-height:18px}
 .lnk{background:none;border:0;color:#d4b56d;text-decoration:underline;cursor:pointer;font:inherit;font-size:14px}
 
-/* APP GENERAL */
-main{max-width:1600px;margin:0 auto;padding:16px;height:100vh;display:flex;flex-direction:column}
-.hd{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid #292326;margin-bottom:14px}
-.hd img{width:40px;height:40px;object-fit:contain}
-.hd b{font-size:22px;color:#f7f7f7}
-.hd small{display:block;font-size:11px;color:#aaa}
+/* APP GENERAL ESTILO SMARTERS PRO */
+main{width:100vw;height:100vh;display:flex;flex-direction:column;padding:12px 16px;gap:10px}
+.hd{display:flex;align-items:center;gap:12px;padding-bottom:6px;border-bottom:1px solid #292326;flex-shrink:0}
+.hd img{width:36px;height:36px;object-fit:contain}
+.hd b{font-size:20px;color:#f7f7f7}
+.hd small{display:block;font-size:10px;color:#aaa}
 .hd .sp{flex:1}
-#hclock{font-weight:600;color:#d8b96c;font-size:16px}
+#hclock{font-weight:600;color:#d8b96c;font-size:15px}
 .brand4k{color:var(--gold);font-weight:700}
-.ghost{background:#111216;border:1px solid #3b3032;color:#f4f4f5;border-radius:9px;padding:8px 14px;font:inherit;cursor:pointer}
+.ghost{background:#111216;border:1px solid #3b3032;color:#f4f4f5;border-radius:8px;padding:6px 12px;font:inherit;cursor:pointer}
 
-/* VISTA HORIZONTAL ESTILO TV */
-.tiles-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:16px 0}
-.tile-card{background:linear-gradient(135deg,#1b1b21,#0e0f12);border:1px solid #343036;border-radius:14px;padding:20px;cursor:pointer;position:relative;overflow:hidden;box-shadow:0 8px 24px #0005;display:flex;flex-direction:column;justify-content:space-between;min-height:130px}
+/* INICIO (GRID ESTILO TV) */
+#home{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:1200px;margin:0 auto;width:100%}
+.tiles-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.tile-card{background:linear-gradient(135deg,#1b1b21,#0e0f12);border:1px solid #343036;border-radius:14px;padding:22px;cursor:pointer;position:relative;overflow:hidden;box-shadow:0 8px 24px #0005;display:flex;flex-direction:column;justify-content:space-between;min-height:140px}
 .tile-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--red)}
 .tile-card:nth-child(2):before{background:var(--gold)}
 .tile-card:nth-child(3):before{background:#a73a40}
@@ -56,44 +57,48 @@ main{max-width:1600px;margin:0 auto;padding:16px;height:100vh;display:flex;flex-
 .tile-card b{font-size:18px;display:block;color:#fff}
 .tile-card small{color:#b8b8bf;font-size:13px}
 
-/* PANTALLA PRINCIPAL CON PANELES LATERALES */
-#lv{display:flex;flex-direction:column;flex:1;min-height:0}
-.top-nav{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
-.top-nav button{background:#17171c;color:#d7d7dc;border:1px solid #38343a;border-radius:8px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+/* DISEÑO PRINCIPAL SMARTERS PRO (2 COLUMNAS FIJAS) */
+#lv{display:flex;flex-direction:column;flex:1;min-height:0;gap:10px}
+.top-nav{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.top-nav button{background:#17171c;color:#d7d7dc;border:1px solid #38343a;border-radius:8px;padding:8px 16px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
 .top-nav button.on{background:#e50914;border-color:#e50914;color:#fff}
 
 .layout-split{display:flex;gap:16px;flex:1;min-height:0}
 
-/* PANEL IZQUIERDO: BUSCADOR ÚNICO + CATEGORÍAS + LISTA */
-.left-panel{flex:0 0 420px;display:flex;flex-direction:column;gap:10px;min-height:0}
-.search-box{width:100%;background:#0c0d10;color:#f5f5f5;border:1px solid #39353b;border-radius:9px;padding:10px 14px;font:inherit}
-.cat-list{background:#151519;border:1px solid #373239;border-radius:10px;padding:6px;overflow-y:auto;max-height:180px}
+/* COLUMNA IZQUIERDA: CATEGORÍAS Y CANALES */
+.left-columns{flex:0 0 480px;display:flex;gap:10px;min-height:0}
+.col-cats, .col-items{flex:1;display:flex;flex-direction:column;gap:8px;min-height:0;background:#151519;border:1px solid #373239;border-radius:10px;padding:8px}
+.search-box{width:100%;background:#0c0d10;color:#f5f5f5;border:1px solid #39353b;border-radius:8px;padding:8px 10px;font:inherit;flex-shrink:0;font-size:12px}
+.list-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
+
 .cc{width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:0;color:#cfd4e0;padding:8px 10px;border-radius:6px;cursor:pointer;text-align:left;font:inherit}
 .cc:hover,.cc.on{background:#e50914;color:#fff}
-.cc em{font-style:normal;font-size:12px;color:#aaa}
+.cc em{font-style:normal;font-size:11px;color:#aaa}
 
-.channels-list{flex:1;background:#151519;border:1px solid #373239;border-radius:10px;overflow-y:auto;padding:6px}
-.ch{display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid #28262b;cursor:pointer;border-radius:8px}
-.ch:hover,.ch.on{background:#e509141b;outline:1px solid #e5091455;color:#fff}
-.ch .nm{width:35px;color:#8a8f9a;font-size:13px;text-align:right}
-.ch img{width:36px;height:36px;object-fit:contain;background:#000;border-radius:6px}
-.ch .nx{flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.st{color:#e6bd58;font-size:18px;cursor:pointer;padding:0 4px}
+.ch{display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid #28262b;cursor:pointer;border-radius:6px}
+.ch:hover,.ch.on{background:#e5091422;outline:1px solid #e5091466;color:#fff}
+.ch .nm{width:30px;color:#8a8f9a;font-size:12px;text-align:right}
+.ch img{width:32px;height:32px;object-fit:contain;background:#000;border-radius:4px;flex-shrink:0}
+.ch .nx{flex:1;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st{color:#e6bd58;font-size:16px;cursor:pointer;padding:0 4px}
 
-/* PANEL DERECHO: REPRODUCTOR Y ACCIONES */
+/* COLUMNA DERECHA: REPRODUCTOR Y ACCIONES */
 .right-panel{flex:1;display:flex;flex-direction:column;gap:10px;min-height:0}
-#pv{width:100%;aspect-ratio:16/9;background:#000;border:1px solid #383238;border-radius:12px;overflow:hidden;position:relative}
+#pv{width:100%;flex:1;min-height:200px;background:#000;border:1px solid #383238;border-radius:12px;overflow:hidden;position:relative}
 #pv video{width:100%;height:100%;display:block}
-.now-info{background:#141419;border:1px solid #302d33;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
-.now-title{font-size:18px;font-weight:600;color:#f1d58e;display:flex;align-items:center;justify-content:space-between}
-.actions-row{display:flex;gap:10px}
-.actions-row button{background:#1f2026;border:1px solid #38343a;color:#fff;border-radius:8px;padding:8px 16px;cursor:pointer;font:inherit;font-weight:500;display:flex;align-items:center;gap:6px}
+
+.now-info{background:#141419;border:1px solid #302d33;border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.now-title{font-size:16px;font-weight:600;color:#f1d58e;display:flex;align-items:center;justify-content:space-between}
+.actions-row{display:flex;gap:8px}
+.actions-row button{background:#1f2026;border:1px solid #38343a;color:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;font:inherit;font-weight:500;display:flex;align-items:center;gap:6px;font-size:13px}
 .actions-row button:hover{background:#e50914;border-color:#e50914}
 
 @media (max-width:900px){
+  html,body{overflow:auto}
+  main{height:auto;min-height:100vh}
   .layout-split{flex-direction:column}
-  .left-panel{flex:0 0 auto;max-height:50vh}
-  .tiles-grid{grid-template-columns:repeat(2,1fr)}
+  .left-columns{flex:0 0 auto;height:450px}
+  #pv{height:250px}
 }
 </style>
 </head>
@@ -119,7 +124,7 @@ main{max-width:1600px;margin:0 auto;padding:16px;height:100vh;display:flex;flex-
 <main id="app" class="hide">
   <div class="hd">
     <img src="logo.png" alt="" onerror="this.remove()">
-    <div><b>Milenio<span class="brand4k">4K</span></b><small id="hmode"></small></div>
+    <div><b>Milenio<span class="brand4k">4K</span></b></div>
     <span class="sp"></span>
     <span id="hclock"></span>
     <button class="ghost" id="out">Salir</button>
@@ -135,9 +140,11 @@ main{max-width:1600px;margin:0 auto;padding:16px;height:100vh;display:flex;flex-
     </div>
   </section>
 
-  <!-- LISTAS Y REPRODUCTOR -->
+  <!-- INTERFAZ PRINCIPAL TIPO SMARTERS PRO -->
   <section id="lv" class="hide">
     <div class="top-nav" id="tabs">
+      <button class="ghost" id="backHome">← Volver al Menú</button>
+      <div style="flex:1"></div>
       <button data-t="live" class="on">TV en vivo</button>
       <button data-t="vod">Películas</button>
       <button data-t="series">Series</button>
@@ -145,21 +152,26 @@ main{max-width:1600px;margin:0 auto;padding:16px;height:100vh;display:flex;flex-
     </div>
 
     <div class="layout-split">
-      <!-- PANEL IZQUIERDO -->
-      <div class="left-panel">
-        <input id="q" class="search-box" type="search" placeholder="Buscar canales o elementos...">
-        <div class="cat-list" id="cats"></div>
-        <div class="channels-list" id="list"></div>
+      <!-- COLUMNA IZQUIERDA: CATEGORÍAS + CANALES -->
+      <div class="left-columns">
+        <div class="col-cats">
+          <input id="cq" class="search-box" type="search" placeholder="Buscar categoría...">
+          <div class="list-scroll" id="cats"></div>
+        </div>
+        <div class="col-items">
+          <input id="q" class="search-box" type="search" placeholder="Buscar contenido...">
+          <div class="list-scroll" id="list"></div>
+        </div>
       </div>
 
-      <!-- PANEL DERECHO -->
+      <!-- COLUMNA DERECHA: REPRODUCTOR Y DETALLES -->
       <div class="right-panel">
         <div id="pv"><video id="v" controls playsinline autoplay></video></div>
         <div class="now-info">
-          <div class="now-title"><span id="now">Elige un canal para empezar</span><span id="favBtn" class="st" style="display:none">☆</span></div>
+          <div class="now-title"><span id="now">Elige un elemento para reproducir</span></div>
           <div class="actions-row">
             <button id="epgBtn">📅 EPG</button>
-            <button id="favActionBtn">🤍 Agregar a los favoritos</button>
+            <button id="favActionBtn">🤍 Agregar a favoritos</button>
             <button id="cp" class="ghost">Copiar enlace</button>
           </div>
         </div>
@@ -208,6 +220,7 @@ $('go').onclick=async function(){
 };
 
 $('out').onclick=function(){sess=null;show(false);$('home').classList.remove('hide');$('lv').classList.add('hide')};
+$('backHome').onclick=function(){$('home').classList.remove('hide');$('lv').classList.add('hide')};
 
 function showHome(){
   $('home').classList.remove('hide');$('lv').classList.add('hide');
@@ -224,8 +237,8 @@ document.querySelectorAll('[data-go]').forEach(function(el){
 });
 
 async function loadTab(t){
-  tab=t;curCat='';catItems=[];chans=[];
-  document.querySelectorAll('#tabs button').forEach(function(b){b.classList.toggle('on',b.dataset.t===t)});
+  tab=t;curCat='';catItems=[];chans=[];$('q').value='';$('cq').value='';
+  document.querySelectorAll('#tabs button[data-t]').forEach(function(b){b.classList.toggle('on',b.dataset.t===t)});
   if(t==='favs'){chans=favs;renderCats();renderList();return}
   if(t==='live'){
     var gs={},tot=data.live.length;data.live.forEach(function(c){if(c.group)gs[c.group]=(gs[c.group]||0)+1});
@@ -242,8 +255,9 @@ async function loadTab(t){
 function api(a,extra){return fetch(sess.s+'/player_api.php?username='+enc(sess.u)+'&password='+enc(sess.p)+'&action='+a+(extra||'')).then(function(r){return r.json()})}
 
 function renderCats(){
-  var h='';
+  var f=$('cq').value.toLowerCase(),h='';
   catItems.forEach(function(c){
+    if(f&&c.name.toLowerCase().indexOf(f)<0)return;
     h+='<button class="cc'+(String(c.id)===String(curCat)?' on':'')+'" data-id="'+esc(c.id)+'"><span>'+esc(c.name)+'</span>'+(c.n!=null?'<em>'+c.n+'</em>':'')+'</button>';
   });
   $('cats').innerHTML=h||'<div style="color:#aaa;padding:6px">Sin categorías</div>';
@@ -285,6 +299,7 @@ function renderList(){
 }
 
 $('q').oninput=renderList;
+$('cq').oninput=renderCats;
 
 $('list').onclick=function(e){
   var st=e.target.closest('.st');
@@ -311,7 +326,8 @@ $('cp').onclick=function(){
   if(activeList[cur])navigator.clipboard.writeText(activeList[cur].url);
   alert('Enlace copiado');
 };
+$('tabs').onclick=function(e){var b=e.target.closest('button[data-t]');if(b)loadTab(b.dataset.t)};
 </script>
 </body>
-  </html>
-  
+           </html>
+           
