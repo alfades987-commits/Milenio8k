@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Milenio4K</title>
+<meta name="theme-color" content="#08090c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Milenio4K">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#141626;--card:#fff;--tx:#2b2b2b;--mu:#8a8f9a;--ac:#3498db;--bd:#dcdfe4;--sub:#1d2033}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:#eceff4;font:15px/1.4 Poppins,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.hide{display:none!important}
+/* LOGIN */
+#login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;gap:36px}
+.logo{text-align:center}
+.logo img{max-width:300px;width:75vw;display:block;margin:0 auto;mix-blend-mode:screen}
+.logo .t{font-size:56px;font-weight:700;line-height:1;background:linear-gradient(180deg,#ffd23f,#ff7a00);-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo .s{display:inline-block;margin-top:6px;font-size:40px;font-weight:700;color:#2f8cff;letter-spacing:4px}
+.box{width:100%;max-width:420px;background:var(--card);color:var(--tx);border-radius:14px;padding:26px 24px}
+.box h2{margin:0 0 20px;text-align:center;font-size:24px;font-weight:700}
+.box input[type=text],.box input[type=password],.box input[type=url]{width:100%;height:52px;margin-bottom:14px;border:1px solid var(--bd);border-radius:8px;padding:0 14px;font:inherit;color:var(--tx);background:#fff}
+.box input:focus{outline:2px solid var(--ac);border-color:var(--ac)}
+.box button{width:100%;height:52px;border:0;border-radius:8px;background:var(--ac);color:#fff;font:inherit;font-size:17px;cursor:pointer}
+.box button:disabled{opacity:.6}
+.rem{display:flex;align-items:center;gap:8px;margin:2px 0 14px;font-size:14px;color:var(--mu)}
+#err{color:#d33;font-size:14px;margin-top:10px;text-align:center;min-height:18px}
+.lnk{background:none;border:0;color:#9aa3b2;text-decoration:underline;cursor:pointer;font:inherit;font-size:14px}
+/* APP */
+main{max-width:1000px;margin:0 auto;padding:12px}
+.ghost{background:transparent;border:1px solid #3a3d52;color:#cfd4e0;border-radius:10px;padding:7px 13px;font:inherit;cursor:pointer}
+.hd{display:flex;align-items:center;gap:10px;padding:2px 0 4px}
+.hd img{width:42px;height:42px;object-fit:cover;object-position:top;mix-blend-mode:screen}
+.hd b{font-size:19px;letter-spacing:.5px}
+.hd small{display:block;font-size:11px;color:#8a8f9a;font-weight:400;letter-spacing:0}
+.hd .sp{flex:1}
+#hclock{font-weight:600;color:#cfd4e0}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 4px}
+.tile{border-radius:18px;padding:14px;min-height:116px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.28)}
+.tile:active{transform:scale(.98)}
+.tile .ic{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:20px}
+.tile b{display:block;font-size:17px}
+.tile small{opacity:.85;font-size:12px}
+.t1{background:linear-gradient(135deg,#1c5fa8,#27a3c6)}
+.t2{background:linear-gradient(135deg,#4d2f9a,#7c52d6)}
+.t3{background:linear-gradient(135deg,#17775a,#2fb98c)}
+.t4{background:linear-gradient(135deg,#a8691a,#dca437)}
+.sh{margin:20px 2px 8px;color:#9aa3b2;font-size:14px;font-weight:600}
+.rowh{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.rowh::-webkit-scrollbar{display:none}
+.hc{flex:0 0 108px;cursor:pointer}
+.im{position:relative;aspect-ratio:2/3;border-radius:10px;overflow:hidden;background:#242740}
+.im img{width:100%;height:100%;object-fit:cover;display:block}
+.im.lg img{object-fit:contain;padding:14px}
+.tt{margin-top:6px;font-size:12px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* LISTAS: pantalla fija, la lista se desplaza por dentro */
+#lv{display:flex;flex-direction:column;height:calc(100vh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100dvh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+.bar{display:flex;align-items:center;gap:10px}
+.bar b{font-size:17px;white-space:nowrap}
+#tabs{display:flex;gap:6px;margin-left:auto}
+#tabs button{background:var(--sub);color:#cfd4e0;border:1px solid #33364a;border-radius:10px;padding:7px 12px;font:inherit;font-size:14px;cursor:pointer}
+#tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+#cbar{display:flex;gap:8px;align-items:center;margin:10px 0}
+#cbar .ghost{font-size:20px;line-height:1;padding:8px 16px}
+#cname{flex:1;min-width:0;background:var(--sub);color:#fff;border:1px solid #33364a;border-radius:10px;padding:10px 12px;font:inherit;font-weight:600;font-size:16px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#body{flex:1;min-height:0;display:flex;gap:14px}
+#left{flex:1 1 56%;min-width:0;display:flex;flex-direction:column;min-height:0}
+#right{flex:0 0 40%;min-width:0;display:none;flex-direction:column;overflow-y:auto}
+#lv.withpv #right{display:flex}
+@media (orientation:portrait){
+  #body{flex-direction:column}
+  #right{order:-1;flex:0 0 auto;overflow:visible}
+}
+#pv{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;flex:0 0 auto}
+#pv video{width:100%;height:100%;display:block}
+#now{margin:8px 2px 2px;color:#cfd4e0;font-size:14px;min-height:20px}
+.hint{margin:0 2px 4px;color:#6f7585;font-size:12px}
+.card{background:var(--sub);border-radius:14px;padding:12px;margin-top:12px}
+textarea,#q,#cq{width:100%;background:var(--bg);color:#eceff4;border:1px solid #33364a;border-radius:10px;padding:10px;font:inherit}
+textarea{height:90px}
+.row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.btn,.card button{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:10px 14px;font:inherit;cursor:pointer}
+#list{margin-top:8px;flex:1;min-height:0;overflow-y:auto}
+#list.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:12px;align-content:start}
+.pc{cursor:pointer}
+.pc.on .tt,.ch.on{color:#5dade2}
+.ch{display:flex;align-items:center;gap:10px;padding:9px 6px;border-bottom:1px solid #2a2d45;cursor:pointer}
+.ch.on{font-weight:600;background:rgba(52,152,219,.12);border-radius:8px}
+.ch .nm{flex:0 0 30px;text-align:right;color:#8a8f9a;font-size:13px}
+.ch img{width:36px;height:36px;object-fit:contain;border-radius:6px;background:var(--bg);flex:0 0 auto}
+.ch .nx{flex:1;min-width:0}
+.ch .g{color:#8a8f9a;font-size:12px;text-align:right;max-width:30%}
+.st{color:#f5c542;cursor:pointer}
+.ch .st{font-size:20px;padding:4px 2px 4px 8px}
+.im .st{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.55);border-radius:50%;width:28px;height:28px;display:grid;place-items:center;font-size:15px}
+.im .rt{position:absolute;top:4px;left:4px;background:#2b7bd1;color:#fff;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:600}
+#msg{color:#8a8f9a;font-size:13px;margin:6px 0 0}
+/* SELECTOR DE CARPETAS */
+#picker{position:fixed;inset:0;z-index:50;background:var(--bg);padding:12px;padding-top:calc(12px + env(safe-area-inset-top,0px));overflow-y:auto}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.ph b{font-size:18px}
+#cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin-top:10px}
+.cc{display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;background:var(--sub);color:#cfd4e0;border:1px solid #33364a;border-radius:10px;padding:11px 12px;font:inherit;font-size:14px;cursor:pointer}
+.cc em{font-style:normal;color:#8a8f9a;font-size:12px}
+.cc.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.cc.on em{color:#e8f4fd}
+
+/* MILENIO4K · tema propio inspirado en interfaces IPTV modernas */
+:root{--bg:#08090c;--card:#111216;--tx:#f5f5f5;--mu:#a7a7ad;--ac:#e50914;--bd:#303036;--sub:#15161b;--gold:#d7ad55;--red:#e50914}
+body{background:radial-gradient(ellipse at 50% -15%,#321013 0%,#0b0b0e 42%,#07080a 100%);color:#f4f4f5}
+#login{gap:24px}
+.logo img{max-width:320px;filter:drop-shadow(0 0 20px rgba(229,9,20,.18))}
+.logo .t{font-size:clamp(40px,8vw,62px);background:linear-gradient(180deg,#ffe4a0,#c99a38);-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo .s{font-size:clamp(30px,6vw,42px);color:#e50914;letter-spacing:3px;margin-top:0}
+.box{background:linear-gradient(160deg,#17181d,#0f1014);color:#f5f5f5;border:1px solid #343238;border-radius:18px;box-shadow:0 18px 55px #0009;padding:28px 24px}
+.box h2{font-size:clamp(20px,4vw,25px)}
+.box input[type=text],.box input[type=password],.box input[type=url]{background:#090a0d;color:#fff;border-color:#34343b;border-radius:10px}
+.box input:focus{outline:2px solid var(--gold);border-color:var(--gold)}
+.box button,.btn,.card button{background:linear-gradient(110deg,#c9000b,#f01824);border-radius:10px;font-weight:700;letter-spacing:.3px;box-shadow:0 7px 18px #e5091428}
+.rem{color:#c1c1c7}
+#err{color:#ff7b82}
+.lnk{color:#d4b56d}
+main{max-width:1500px;margin:0 auto;padding:clamp(12px,2vw,28px)}
+.ghost{background:#111216;border-color:#3b3032;color:#f4f4f5;border-radius:9px}
+.ghost:hover,.ghost:focus-visible{border-color:var(--gold);color:#ffe6a3}
+.hd{padding:8px 0 14px;border-bottom:1px solid #292326}
+.hd img{width:48px;height:48px;object-fit:contain}
+.hd b{font-size:clamp(20px,2.4vw,28px);color:#f7f7f7}
+.hd small{color:#aaa; margin-top:3px}
+.brand4k{color:var(--gold);font-weight:700}
+#hclock{color:#d8b96c}
+.tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:20px 0 8px}
+.tile{position:relative;overflow:hidden;min-height:132px;padding:18px;border:1px solid #343036;border-radius:13px;background:linear-gradient(130deg,#1a1a20,#101115);box-shadow:0 8px 24px #0005;transition:transform .15s,border-color .15s}
+.tile:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--red)}
+.tile .ic{width:46px;height:46px;border-radius:12px;background:#e5091420;border:1px solid #e5091455;color:#ff626a;font-size:24px}
+.tile b{font-size:clamp(17px,2vw,22px)}
+.tile small{color:#b8b8bf}
+.t1,.t2,.t3,.t4{background:linear-gradient(135deg,#1b1b21,#0e0f12)}
+.t2:before{background:var(--gold)}.t3:before{background:#a73a40}.t4:before{background:var(--gold)}
+.sh{margin:24px 2px 10px;color:#f4f4f5;font-size:clamp(15px,1.5vw,19px);font-weight:700}
+.sh:after{content:"";display:block;width:42px;height:3px;margin-top:7px;background:var(--red);border-radius:3px}
+.rowh{gap:14px}
+.hc{flex-basis:clamp(112px,14vw,170px)}
+.im{background:#17171c;border:1px solid #333036;border-radius:9px}
+.im img{transition:transform .2s}
+.hc:hover .im img{transform:scale(1.035)}
+.tt{color:#e6e6e8;font-size:13px}
+.bar{gap:12px;flex-wrap:wrap;padding:8px 0}
+.bar b{font-size:clamp(17px,2vw,23px)}
+#tabs{gap:7px;flex-wrap:wrap}
+#tabs button{background:#17171c;color:#d7d7dc;border:1px solid #38343a;border-radius:8px;font-weight:600}
+#tabs button.on{background:#e50914;border-color:#e50914;color:white}
+#cbar{margin:14px 0}
+#cname{background:#151519;border-color:#39343a}
+#body{gap:18px}
+#pv{border:1px solid #383238;border-radius:10px;box-shadow:0 10px 28px #0008}
+#now{color:#f1d58e;font-weight:600}
+.hint{color:#999}
+.card{background:#141419;border:1px solid #302d33}
+textarea,#q,#cq{background:#0c0d10;color:#f5f5f5;border-color:#39353b;border-radius:9px}
+#q,#cq{min-height:46px}
+#list.grid{grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:14px}
+.ch{padding:11px 9px;border-bottom-color:#28262b;border-radius:8px}
+.ch.on{color:#fff;background:#e509141b;outline:1px solid #e5091455}
+.pc.on .tt{color:#f1d58e}
+.ch .st,.st{color:#e6bd58}
+.im .rt{background:#e50914}
+#msg{color:#b1b1b8}
+#picker{background:rgba(7,8,10,.98);backdrop-filter:blur(12px)}
+.ph b{color:#f3d68e}
+.cc{background:#151519;border-color:#373239;border-radius:9px}
+.cc.on{background:#e50914;border-color:#e50914}
+/* Accesibilidad para control remoto y pantallas de TV */
+button,[role="button"],.tile,.hc,.pc,.ch,.cc{outline-offset:4px}
+button:focus-visible,.tile:focus-visible,.hc:focus-visible,.pc:focus-visible,.ch:focus-visible,.cc:focus-visible{outline:3px solid var(--gold);box-shadow:0 0 0 5px #d7ad5522}
+@media (min-width:850px) and (orientation:landscape){
+  main{padding:24px 34px}
+  .tiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+  .tile{min-height:154px;padding:22px}
+  .tile .ic{width:52px;height:52px;font-size:27px}
+  .hc{flex-basis:clamp(140px,13vw,190px)}
+  #list.grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:16px}
+  #tabs button{padding:10px 16px;font-size:15px}
+  .ghost{padding:10px 16px}
+  #cname{padding:12px 15px}
+}
+@media (max-width:520px){
+  .box{padding:24px 18px}
+  .tiles{gap:10px}
+  .tile{min-height:112px;padding:13px}
+  .tile .ic{width:38px;height:38px;font-size:20px}
+  .tile b{font-size:15px}
+  #tabs{margin-left:0;width:100%;overflow-x:auto}
+  #tabs button{white-space:nowrap;padding:7px 10px}
+  #list.grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
+}
+
+</style>
+</head>
+<body>
+
+<section id="login">
+  <div class="logo">
+    <img src="logo.png" alt="" onerror="this.remove();document.getElementById('lt').classList.remove('hide')">
+    <div id="lt" class="hide"><div class="t">Milenio</div><div class="s">4K</div></div>
+  </div>
+  <div class="box">
+    <h2>Bienvenido a <span class="brand4k">Milenio4K</span></h2>
+    <input id="srv" type="url" placeholder="Servidor (http://...)" class="hide" autocapitalize="off">
+    <input id="usr" type="text" placeholder="Usuario" autocomplete="username" autocapitalize="off">
+    <input id="pwd" type="password" placeholder="Contraseña" autocomplete="current-password">
+    <label class="rem"><input id="rem" type="checkbox" checked> Recordarme en este dispositivo</label>
+    <button id="go">INICIAR SESIÓN</button>
+    <div id="err"></div>
+  </div>
+  <button class="lnk" id="m3u">Cargar lista M3U manualmente</button>
+</section>
+
+<main id="app" class="hide">
+
+  <!-- INICIO -->
+  <section id="home">
+    <div class="hd">
+      <img src="logo.png" alt="" onerror="this.remove()">
+      <b>Milenio<span class="brand4k">4K</span><small id="hmode"></small></b>
+      <span class="sp"></span>
+      <span id="hclock"></span>
+      <button class="ghost" id="out">Salir</button>
+    </div>
+    <div class="tiles">
+      <div class="tile t1" data-go="live"><div class="ic">📺</div><div><b>TV en vivo</b><small id="c_live"> </small></div></div>
+      <div class="tile t2" data-go="vod"><div class="ic">🎬</div><div><b>Películas</b><small>Explorar</small></div></div>
+      <div class="tile t3" data-go="series"><div class="ic">🍿</div><div><b>Series</b><small>Explorar</small></div></div>
+      <div class="tile t4" data-go="favs"><div class="ic">⭐</div><div><b>Favoritos</b><small id="c_favs"> </small></div></div>
+    </div>
+    <div id="recSec" class="hide"><div class="sh">Visto recientemente</div><div class="rowh" id="recRow"></div></div>
+    <div id="favSec" class="hide"><div class="sh">Tus favoritos</div><div class="rowh" id="favRow"></div></div>
+  </section>
+
+  <!-- LISTAS Y VISTA PREVIA -->
+  <section id="lv" class="hide">
+    <div class="bar">
+      <button class="ghost" id="ib">⌂ Inicio</button>
+      <b id="sec"></b>
+      <div id="tabs">
+        <button data-t="live" class="on">TV</button><button data-t="vod">Películas</button><button data-t="series">Series</button><button data-t="favs">⭐</button>
+      </div>
+    </div>
+    <div id="cbar">
+      <button class="ghost" id="cprev">‹</button>
+      <button id="cname">Elegir categoría</button>
+      <button class="ghost" id="cnext">›</button>
+    </div>
+    <div id="body">
+      <div id="left">
+        <input id="q" type="search" placeholder="Buscar…">
+        <button id="back" class="lnk hide">← Volver a la lista</button>
+        <div id="msg"></div>
+        <div id="list"></div>
+      </div>
+      <div id="right">
+        <div id="pv"><video id="v" controls playsinline autoplay></video></div>
+        <div id="now">Elige un canal para empezar</div>
+        <div class="hint hide" id="pvh">Toca la pantalla para verla en grande. Atrás para volver.</div>
+        <button id="cp" class="lnk" style="text-align:left;margin:0 0 8px 2px">Copiar enlace del canal</button>
+        <div class="card hide" id="m3ubox">
+          <textarea id="txt" placeholder="Pega aquí el contenido de tu lista M3U (#EXTM3U ...)"></textarea>
+          <div class="row">
+            <button id="load">Cargar lista</button>
+            <label class="btn">Subir archivo<input id="file" type="file" accept=".m3u,.m3u8,.txt" hidden></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARPETAS -->
+  <div id="picker" class="hide">
+    <div class="ph"><b id="ptitle">Carpetas</b><button class="ghost" id="pclose">✕ Cerrar</button></div>
+    <input id="cq" type="search" placeholder="Buscar carpeta…">
+    <div id="cats"></div>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.8/hls.min.js"></script>
+<script>
+/* ===== CONFIGURACIÓN =====
+   Dirección de tu servicio (formato Xtream: usuario/contraseña).
+   Si la dejas vacía, la pantalla de login pedirá el servidor. */
+var SERVER = "https://aioplus.es:443";
+
+var $=function(i){return document.getElementById(i)};
+var v=$('v'),chans=[],hls=null,cur=-1,sess=null,seriesPrev=null,tab='live',lim=100,epMode=false;
+var data={live:null,vod:null,series:null},catsCache={},strCache={},favs=[],recs=[],curCat='',catIdx=-1,catItems=[];
+var pvOn=false,pvFull=false;
+
+/* Reproductor nativo (solo en la app Android) */
+var NP=null;try{var C=window.Capacitor;if(C&&((C.isNativePlatform&&C.isNativePlatform())||(C.getPlatform&&C.getPlatform()!=='web')||(C.Plugins&&C.Plugins.NativePlayer))){NP=C.registerPlugin?C.registerPlugin('NativePlayer'):(C.Plugins&&C.Plugins.NativePlayer);if(NP)v.style.display='none'}}catch(e){}
+$('hmode').textContent=NP?'nativo v13':'web v13';
+if(NP)$('pvh').classList.remove('hide');
+
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function enc(x){return encodeURIComponent(x)}
+function show(app){$('login').classList.toggle('hide',app);$('app').classList.toggle('hide',!app)}
+function norm(u){u=u.trim().replace(/\/+$/,'');return /^https?:\/\//i.test(u)?u:'http://'+u}
+function ld(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
+function sv(k,a){try{localStorage.setItem(k,JSON.stringify(a))}catch(e){}}
+function isLive(c){return /\/live\//.test(c.url||'')}
+favs=ld('tv_favs');recs=ld('tv_rec');
+
+/* ---- Favoritos y recientes ---- */
+function key(c){return c.series?'s'+c.series:c.url}
+function isFav(c){var k=key(c);return favs.some(function(f){return key(f)===k})}
+function toggleFav(c){var k=key(c),i=-1;favs.forEach(function(f,j){if(key(f)===k)i=j});
+  if(i>=0)favs.splice(i,1);else favs.unshift({name:c.name,group:c.group||'',logo:c.logo||'',url:c.url||'',series:c.series||''});
+  sv('tv_favs',favs)}
+function addRec(c){if(!c.url)return;recs=recs.filter(function(r){return r.url!==c.url});
+  recs.unshift({name:c.name,group:c.group||'',logo:c.logo||'',url:c.url});recs=recs.slice(0,12);sv('tv_rec',recs)}
+
+/* ---- Vista previa nativa ---- */
+function pvRect(){var b=$('pv').getBoundingClientRect(),d=window.devicePixelRatio||1;
+  return{x:Math.round(b.left*d),y:Math.round(b.top*d),w:Math.round(b.width*d),h:Math.round(b.height*d)}}
+function syncPv(){if(NP&&pvOn&&!pvFull){NP.place(pvRect()).catch(function(){})}}
+function pvStop(){if(NP&&pvOn){pvOn=false;pvFull=false;NP.hidePreview().catch(function(){})}}
+function previewNative(c){var r=pvRect();
+  NP.preview({url:c.url,x:r.x,y:r.y,w:r.w,h:r.h}).then(function(){pvOn=true})
+    .catch(function(e){$('now').textContent='No se pudo abrir la vista previa: '+(e&&e.message?e.message:e)})}
+if(NP&&NP.addListener){
+  NP.addListener('tap',function(){pvFull=!pvFull;NP.fullscreen({on:pvFull}).catch(function(){});if(!pvFull)setTimeout(syncPv,350)});
+  NP.addListener('fullscreen',function(e){pvFull=!!(e&&e.on);if(!pvFull)setTimeout(syncPv,350)});
+  NP.addListener('error',function(e){$('now').textContent='Error: '+((e&&e.message)||'no se pudo reproducir')})}
+window.addEventListener('resize',function(){setTimeout(syncPv,200)});
+
+/* ---- Pantallas ---- */
+function tick(){var d=new Date();$('hclock').textContent=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+tick();setInterval(tick,20000);
+function card(c,src,i){var lg=isLive(c);
+  return '<div class="hc" data-src="'+src+'" data-i="'+i+'"><div class="im'+(lg?' lg':'')+'">'+(c.logo?'<img loading="lazy" alt="" src="'+esc(c.logo)+'">':'')+'</div><div class="tt">'+esc(c.name)+'</div></div>'}
+function renderHome(){
+  $('c_live').textContent=data.live?data.live.length+' canales':' ';
+  $('c_favs').textContent=favs.length+' guardados';
+  $('recRow').innerHTML=recs.map(function(c,i){return card(c,'rec',i)}).join('');
+  $('favRow').innerHTML=favs.map(function(c,i){return card(c,'fav',i)}).join('');
+  $('recSec').classList.toggle('hide',!recs.length);$('favSec').classList.toggle('hide',!favs.length)}
+function showHome(){pvStop();closePicker();$('home').classList.remove('hide');$('lv').classList.add('hide');renderHome();window.scrollTo(0,0)}
+function showList(){if(!$('home').classList.contains('hide')){try{history.pushState({lv:1},'')}catch(e){}}
+  $('home').classList.add('hide');$('lv').classList.remove('hide');window.scrollTo(0,0)}
+window.addEventListener('popstate',function(){
+  if($('app').classList.contains('hide'))return;
+  if(!$('picker').classList.contains('hide')){closePicker();try{history.pushState({lv:1},'')}catch(e){}return}
+  if(sess)showHome();else show(false)});
+$('ib').onclick=function(){history.back()};
+$('home').onclick=function(e){
+  var t=e.target.closest('[data-go]');
+  if(t){showList();loadTab(t.dataset.go);return}
+  var h=e.target.closest('.hc');if(!h)return;
+  var c=(h.dataset.src==='rec'?recs:favs)[+h.dataset.i];if(!c)return;
+  if(c.series){showList();loadTab('favs');openSeries(c);return}
+  chans=[c];cur=-1;if(!NP)showList();play(0);renderHome()};
+
+/* ---- Login (API Xtream) ---- */
+if(!SERVER)$('srv').classList.remove('hide');
+try{var sc=JSON.parse(localStorage.getItem('tv_cred')||'null');
+  if(sc){$('usr').value=sc.u||'';$('pwd').value=sc.p||'';if(sc.s)$('srv').value=sc.s}}catch(e){}
+$('go').onclick=async function(){
+  var u=$('usr').value.trim(),p=$('pwd').value,s=SERVER||$('srv').value;
+  $('err').textContent='';
+  if(!u||!p||!s.trim()){$('err').textContent='Completa todos los datos.';return}
+  s=norm(s);var b=$('go');b.disabled=true;b.textContent='Entrando…';
+  try{
+    var q='?username='+enc(u)+'&password='+enc(p);
+    var d=await (await fetch(s+'/player_api.php'+q)).json();
+    if(!d.user_info||d.user_info.auth==0)throw new Error('Usuario o contraseña incorrectos.');
+    var cats={};
+    try{(await (await fetch(s+'/player_api.php'+q+'&action=get_live_categories')).json()).forEach(function(c){cats[c.category_id]=c.category_name})}catch(e){}
+    var ls=await (await fetch(s+'/player_api.php'+q+'&action=get_live_streams')).json();
+    var live=ls.map(function(c){return{name:c.name,group:cats[c.category_id]||'',logo:c.stream_icon||'',
+      url:s+'/live/'+enc(u)+'/'+enc(p)+'/'+c.stream_id+'.m3u8'}});
+    try{if($('rem').checked)localStorage.setItem('tv_cred',JSON.stringify({u:u,p:p,s:SERVER?'':s}));else localStorage.removeItem('tv_cred')}catch(e){}
+    sess={s:s,u:u,p:p};data={live:live,vod:null,series:null};catsCache={};strCache={};
+    $('tabs').classList.remove('hide');$('m3ubox').classList.add('hide');
+    show(true);showHome();
+  }catch(e){
+    $('err').textContent=(e&&e.message&&e.message.indexOf('incorrectos')>0)?e.message:'No se pudo conectar. Revisa el servidor, tus datos o tu conexión.';
+  }
+  b.disabled=false;b.textContent='Login';
+};
+$('pwd').onkeydown=function(e){if(e.key==='Enter')$('go').click()};
+$('out').onclick=function(){
+  pvStop();closePicker();
+  if(hls){hls.destroy();hls=null}v.pause();v.removeAttribute('src');
+  chans=[];cur=-1;sess=null;data={live:null,vod:null,series:null};
+  try{localStorage.removeItem('tv_cred')}catch(e){}
+  $('pwd').value='';$('home').classList.remove('hide');$('lv').classList.add('hide');show(false)};
+$('m3u').onclick=function(){
+  pvStop();sess=null;tab='live';lim=100;epMode=false;chans=[];curCat='';catIdx=-1;catItems=[];
+  $('tabs').classList.add('hide');$('cbar').classList.add('hide');$('back').classList.add('hide');$('m3ubox').classList.remove('hide');
+  $('lv').classList.add('withpv');
+  $('sec').textContent='Lista M3U';$('msg').textContent='';show(true);showList();render()};
+
+/* ---- Lista M3U manual ---- */
+function parse(t){var out=[],L=t.split(/\r?\n/),m=null;
+  for(var i=0;i<L.length;i++){var l=L[i].trim();
+    if(l.indexOf('#EXTINF')===0){var g=/group-title="([^"]*)"/.exec(l),lg=/tvg-logo="([^"]*)"/.exec(l);
+      m={name:(l.split(',').slice(1).join(',')||'Sin nombre').trim(),group:g?g[1]:'',logo:lg?lg[1]:''}}
+    else if(l&&l[0]!=='#'&&/^https?:\/\//i.test(l)){out.push({name:m?m.name:l,group:m?m.group:'',logo:m?m.logo:'',url:l});m=null}}
+  return out}
+function setList(t){chans=parse(t);cur=-1;lim=100;render();$('msg').textContent=chans.length?chans.length+' canales cargados.':'No se encontraron canales válidos.'}
+$('load').onclick=function(){setList($('txt').value)};
+$('file').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){setList(String(r.result))};r.readAsText(f)};
+
+/* ---- Lista y reproducción ---- */
+function bd(c){var r=parseFloat(c.rate);return r>0?'<span class="rt">'+r.toFixed(1)+'</span>':''}
+function render(){
+  var f=$('q').value.toLowerCase(),h='',n=0,tot=0,lv=(tab==='live'&&sess),g=curCat,
+      grid=!!sess&&!epMode&&(tab==='vod'||tab==='series'),showG=(tab==='favs'||g===''||!sess);
+  chans.forEach(function(c,i){
+    if(lv&&g&&c.group!==g)return;
+    if(f&&(c.name+' '+c.group).toLowerCase().indexOf(f)<0)return;
+    tot++;if(n>=lim)return;n++;
+    var img=c.logo?'<img loading="lazy" alt="" src="'+esc(c.logo)+'">':'',
+        star=epMode?'':'<span class="st" data-i="'+i+'">'+(isFav(c)?'★':'☆')+'</span>';
+    if(grid)h+='<div class="pc'+(i===cur?' on':'')+'" data-i="'+i+'"><div class="im">'+img+bd(c)+star+'</div><div class="tt">'+esc(c.name)+'</div></div>';
+    else h+='<div class="ch'+(i===cur?' on':'')+'" data-i="'+i+'"><span class="nm">'+tot+'</span>'+(c.logo?img:'<img alt="">')+'<div class="nx">'+esc(c.name)+'</div>'+(showG&&c.group?'<span class="g">'+esc(c.group)+'</span>':'')+star+'</div>'});
+  if(tot>n)h+='<button id="more" class="lnk" style="width:100%;padding:12px;grid-column:1/-1">Mostrar más ('+(tot-n)+' restantes)</button>';
+  $('list').className=grid?'grid':'';
+  $('list').innerHTML=h||(chans.length?'<div style="color:#8a8f9a;padding:8px">Sin resultados.</div>':'')}
+function play(i){var c=chans[i];if(!c)return;cur=i;addRec(c);$('now').textContent='Reproduciendo: '+c.name;render();
+  var lvOn=!$('lv').classList.contains('hide'),pvOk=$('lv').classList.contains('withpv');
+  if(NP){
+    if(isLive(c)&&lvOn&&pvOk){previewNative(c);return}
+    pvStop();
+    NP.play({url:c.url,title:c.name}).catch(function(e){$('now').textContent='No se pudo abrir el reproductor: '+(e&&e.message?e.message:e)});return}
+  webPlay(c)}
+function webPlay(c){
+  if(hls){hls.destroy();hls=null}v.onerror=null;v.onplaying=null;
+  if(window.Hls&&Hls.isSupported()&&/\.m3u8|\/hls|playlist/i.test(c.url)){
+    hls=new Hls();hls.loadSource(c.url);hls.attachMedia(v);
+    hls.on(Hls.Events.MANIFEST_PARSED,function(){v.play().catch(function(){})});
+    hls.on(Hls.Events.ERROR,function(e,d){if(!d.fatal)return;var k=d.response&&d.response.code,info=d.details+(k?', HTTP '+k:'');if(hls){hls.destroy();hls=null}v.src=c.url;v.play().catch(function(){});$('now').textContent='Probando modo nativo ('+info+'): '+c.name;v.onerror=function(){$('now').textContent='Error ('+info+') y el modo nativo también falló: '+c.name};v.onplaying=function(){$('now').textContent='Reproduciendo: '+c.name}})}
+  else{v.src=c.url;v.play().catch(function(){});v.onerror=function(){var m=v.error?v.error.code:'';$('now').textContent='Error de vídeo '+m+': '+c.name}}}
+$('cp').onclick=function(){var c=chans[cur];if(!c){$('now').textContent='Primero elige un canal.';return}try{navigator.clipboard.writeText(c.url);$('cp').textContent='¡Copiado!'}catch(e){prompt('Enlace:',c.url)}setTimeout(function(){$('cp').textContent='Copiar enlace del canal'},1500)};
+
+/* ---- Secciones y carpetas ---- */
+function api(a,extra){return fetch(sess.s+'/player_api.php?username='+enc(sess.u)+'&password='+enc(sess.p)+'&action='+a+(extra||'')).then(function(r){return r.json()})}
+function openPicker(){pvStop();$('cq').value='';$('ptitle').textContent={live:'Carpetas · TV en vivo',vod:'Carpetas · Películas',series:'Carpetas · Series'}[tab]||'Carpetas';renderCats();$('picker').classList.remove('hide')}
+function closePicker(){$('picker').classList.add('hide')}
+function updateCbar(){var c=catItems[catIdx];$('cname').textContent=c?(c.name+(c.n!=null?' ('+c.n+')':'')):'Elegir categoría'}
+function renderCats(){
+  var f=$('cq').value.toLowerCase(),h='';
+  catItems.forEach(function(c,i){
+    if(f&&c.name.toLowerCase().indexOf(f)<0)return;
+    h+='<button class="cc'+(String(c.id)===String(curCat)&&catIdx>=0?' on':'')+'" data-i="'+i+'"><span>'+esc(c.name)+'</span>'+(c.n!=null?'<em>'+c.n+'</em>':'')+'</button>'});
+  $('cats').innerHTML=h||'<div style="color:#8a8f9a;padding:6px">Cargando…</div>'}
+function selectCat(id){
+  curCat=id;catIdx=-1;catItems.forEach(function(c,i){if(String(c.id)===String(id))catIdx=i});
+  closePicker();updateCbar();lim=100;$('q').value='';
+  if(tab==='live'){chans=data.live;cur=-1;$('msg').textContent='';render()}else loadCat(id)}
+function stepCat(d){if(!catItems.length)return;var n=catItems.length,i=catIdx<0?(d>0?0:n-1):(catIdx+d+n)%n;selectCat(catItems[i].id)}
+async function loadTab(t){
+  pvStop();closePicker();
+  tab=t;lim=100;epMode=false;curCat='';catIdx=-1;catItems=[];
+  Array.prototype.forEach.call($('tabs').children,function(b){b.classList.toggle('on',b.dataset.t===t)});
+  $('sec').textContent={live:'TV en vivo',vod:'Películas',series:'Series',favs:'Favoritos'}[t];
+  $('back').classList.add('hide');$('q').value='';updateCbar();
+  var fav=(t==='favs');
+  $('cbar').classList.toggle('hide',fav);
+  $('lv').classList.toggle('withpv',!NP||t==='live'||fav);
+  if(fav){chans=favs;cur=-1;
+    $('msg').textContent=favs.length?favs.length+' favoritos':'Aún no tienes favoritos. Toca la ⭐ de cualquier elemento.';render();return}
+  chans=[];cur=-1;$('msg').textContent='Elige una carpeta para ver su contenido.';render();
+  if(t==='live'){
+    var gs={},tot=data.live.length;data.live.forEach(function(c){if(c.group)gs[c.group]=(gs[c.group]||0)+1});
+    catItems=[{id:'',name:'TODO',n:tot}].concat(Object.keys(gs).sort().map(function(g){return{id:g,name:g,n:gs[g]}}));
+    openPicker();return}
+  try{
+    if(!catsCache[t])catsCache[t]=await api(t==='vod'?'get_vod_categories':'get_series_categories');
+    if(tab!==t)return;
+    catItems=catsCache[t].map(function(c){return{id:c.category_id,name:c.category_name}});
+    openPicker();
+  }catch(e){$('msg').textContent='No se pudo cargar esta sección.'}
+}
+async function loadCat(id){
+  if(id===''||id==null)return;
+  var t=tab,k=t+':'+id;lim=100;epMode=false;$('q').value='';$('back').classList.add('hide');
+  $('msg').textContent='Cargando…';chans=[];render();
+  try{
+    if(!strCache[k]){
+      var ls=await api(t==='vod'?'get_vod_streams':'get_series','&category_id='+enc(id));
+      strCache[k]=ls.map(function(c){return t==='vod'
+        ?{name:c.name,group:'',logo:c.stream_icon||'',rate:c.rating,url:sess.s+'/movie/'+enc(sess.u)+'/'+enc(sess.p)+'/'+c.stream_id+'.'+(c.container_extension||'mp4')}
+        :{name:c.name,group:'',logo:c.cover||'',rate:c.rating,series:c.series_id}});
+    }
+    if(tab!==t)return;
+    chans=strCache[k];cur=-1;$('msg').textContent=chans.length+' elementos';render();
+  }catch(e){$('msg').textContent='No se pudo cargar la carpeta.'}
+}
+async function openSeries(c){
+  $('msg').textContent='Cargando episodios…';
+  try{
+    var d=await api('get_series_info','&series_id='+c.series),ss=d.episodes||{},eps=[];
+    Object.keys(ss).sort(function(a,b){return a-b}).forEach(function(sn){(ss[sn]||[]).forEach(function(e){
+      eps.push({name:'T'+sn+' E'+e.episode_num+' · '+(e.title||''),group:c.name,logo:(e.info&&e.info.movie_image)||c.logo,
+        url:sess.s+'/series/'+enc(sess.u)+'/'+enc(sess.p)+'/'+e.id+'.'+(e.container_extension||'mp4')})})});
+    seriesPrev=chans;chans=eps;cur=-1;lim=100;epMode=true;$('q').value='';$('back').classList.remove('hide');
+    $('msg').textContent=c.name+' · '+eps.length+' episodios';render();
+  }catch(e){$('msg').textContent='No se pudieron cargar los episodios.'}
+}
+$('back').onclick=function(){if(seriesPrev){chans=seriesPrev;cur=-1;lim=100;epMode=false;$('back').classList.add('hide');
+  $('msg').textContent=tab==='favs'?favs.length+' favoritos':chans.length+' elementos';render()}};
+$('tabs').onclick=function(e){var b=e.target.closest('button');if(b)loadTab(b.dataset.t)};
+$('cname').onclick=function(){if(catItems.length)openPicker()};
+$('cprev').onclick=function(){stepCat(-1)};
+$('cnext').onclick=function(){stepCat(1)};
+$('pclose').onclick=closePicker;
+$('cq').oninput=renderCats;
+$('cats').onclick=function(e){var b=e.target.closest('.cc');if(!b)return;var c=catItems[+b.dataset.i];if(c)selectCat(c.id)};
+$('q').oninput=function(){lim=100;render()};
+$('list').onclick=function(e){
+  if(e.target.id==='more'){lim+=100;render();return}
+  var st=e.target.closest('.st');
+  if(st){var c0=chans[+st.dataset.i];if(c0){toggleFav(c0);if(tab==='favs')$('msg').textContent=favs.length+' favoritos';render()}return}
+  var el=e.target.closest('[data-i]');if(!el)return;var i=+el.dataset.i;
+  if(chans[i]&&chans[i].series)openSeries(chans[i]);else play(i)};
+</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+</script>
+</body>
+</html>
