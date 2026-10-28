@@ -45,7 +45,7 @@ main{max-width:1600px;margin:0 auto;padding:16px;height:100vh;display:flex;flex-
 .brand4k{color:var(--gold);font-weight:700}
 .ghost{background:#111216;border:1px solid #3b3032;color:#f4f4f5;border-radius:9px;padding:8px 14px;font:inherit;cursor:pointer}
 
-/* VISTA HORIZONTAL ESTILO TV (IMAGEN 1) */
+/* VISTA HORIZONTAL ESTILO TV */
 .tiles-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:16px 0}
 .tile-card{background:linear-gradient(135deg,#1b1b21,#0e0f12);border:1px solid #343036;border-radius:14px;padding:20px;cursor:pointer;position:relative;overflow:hidden;box-shadow:0 8px 24px #0005;display:flex;flex-direction:column;justify-content:space-between;min-height:130px}
 .tile-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--red)}
@@ -56,7 +56,7 @@ main{max-width:1600px;margin:0 auto;padding:16px;height:100vh;display:flex;flex-
 .tile-card b{font-size:18px;display:block;color:#fff}
 .tile-card small{color:#b8b8bf;font-size:13px}
 
-/* SECCIÓN PRINCIPAL CON PANELES LATERALES (IMÁGENES 3 y 4) */
+/* PANTALLA PRINCIPAL CON PANELES LATERALES */
 #lv{display:flex;flex-direction:column;flex:1;min-height:0}
 .top-nav{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
 .top-nav button{background:#17171c;color:#d7d7dc;border:1px solid #38343a;border-radius:8px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
@@ -64,10 +64,10 @@ main{max-width:1600px;margin:0 auto;padding:16px;height:100vh;display:flex;flex-
 
 .layout-split{display:flex;gap:16px;flex:1;min-height:0}
 
-/* PANEL IZQUIERDO: CATEGORÍAS + CANALES */
+/* PANEL IZQUIERDO: BUSCADOR ÚNICO + CATEGORÍAS + LISTA */
 .left-panel{flex:0 0 420px;display:flex;flex-direction:column;gap:10px;min-height:0}
 .search-box{width:100%;background:#0c0d10;color:#f5f5f5;border:1px solid #39353b;border-radius:9px;padding:10px 14px;font:inherit}
-.cat-list{background:#151519;border:1px solid #373239;border-radius:10px;padding:6px;overflow-y:auto;max-height:220px}
+.cat-list{background:#151519;border:1px solid #373239;border-radius:10px;padding:6px;overflow-y:auto;max-height:180px}
 .cc{width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:0;color:#cfd4e0;padding:8px 10px;border-radius:6px;cursor:pointer;text-align:left;font:inherit}
 .cc:hover,.cc.on{background:#e50914;color:#fff}
 .cc em{font-style:normal;font-size:12px;color:#aaa}
@@ -90,7 +90,6 @@ main{max-width:1600px;margin:0 auto;padding:16px;height:100vh;display:flex;flex-
 .actions-row button{background:#1f2026;border:1px solid #38343a;color:#fff;border-radius:8px;padding:8px 16px;cursor:pointer;font:inherit;font-weight:500;display:flex;align-items:center;gap:6px}
 .actions-row button:hover{background:#e50914;border-color:#e50914}
 
-/* RESPONSIVO PARA MÓVILES */
 @media (max-width:900px){
   .layout-split{flex-direction:column}
   .left-panel{flex:0 0 auto;max-height:50vh}
@@ -126,7 +125,7 @@ main{max-width:1600px;margin:0 auto;padding:16px;height:100vh;display:flex;flex-
     <button class="ghost" id="out">Salir</button>
   </div>
 
-  <!-- PANTALLA DE INICIO (ESTILO HORIZONTAL TV - IMAGEN 1) -->
+  <!-- INICIO -->
   <section id="home">
     <div class="tiles-grid">
       <div class="tile-card" data-go="live"><div class="ic">📺</div><div><b>TV en vivo</b><small id="c_live">Cargando...</small></div></div>
@@ -136,7 +135,7 @@ main{max-width:1600px;margin:0 auto;padding:16px;height:100vh;display:flex;flex-
     </div>
   </section>
 
-  <!-- PANTALLA DE REPRODUCCIÓN Y LISTAS (ESTILO IMÁGENES 3 Y 4) -->
+  <!-- LISTAS Y REPRODUCTOR -->
   <section id="lv" class="hide">
     <div class="top-nav" id="tabs">
       <button data-t="live" class="on">TV en vivo</button>
@@ -148,13 +147,12 @@ main{max-width:1600px;margin:0 auto;padding:16px;height:100vh;display:flex;flex-
     <div class="layout-split">
       <!-- PANEL IZQUIERDO -->
       <div class="left-panel">
-        <input id="cq" class="search-box" type="search" placeholder="Buscar categoría...">
+        <input id="q" class="search-box" type="search" placeholder="Buscar canales o elementos...">
         <div class="cat-list" id="cats"></div>
-        <input id="q" class="search-box" type="search" placeholder="Buscar canales...">
         <div class="channels-list" id="list"></div>
       </div>
 
-      <!-- PANEL DERECHO (REPRODUCTOR Y DATOS) -->
+      <!-- PANEL DERECHO -->
       <div class="right-panel">
         <div id="pv"><video id="v" controls playsinline autoplay></video></div>
         <div class="now-info">
@@ -163,10 +161,6 @@ main{max-width:1600px;margin:0 auto;padding:16px;height:100vh;display:flex;flex-
             <button id="epgBtn">📅 EPG</button>
             <button id="favActionBtn">🤍 Agregar a los favoritos</button>
             <button id="cp" class="ghost">Copiar enlace</button>
-          </div>
-          <div class="card hide" id="m3ubox" style="margin-top:10px">
-            <textarea id="txt" placeholder="Pega aquí el contenido de tu lista M3U..." style="width:100%;height:70px;background:#0c0d10;color:#fff;border:1px solid #39353b;border-radius:8px;padding:8px"></textarea>
-            <button id="load" style="margin-top:6px">Cargar lista</button>
           </div>
         </div>
       </div>
@@ -193,7 +187,6 @@ tick();setInterval(tick,20000);
 
 function show(app){$('login').classList.toggle('hide',app);$('app').classList.toggle('hide',!app)}
 
-// LOGIN
 try{var sc=JSON.parse(localStorage.getItem('tv_cred')||'null');if(sc){$('usr').value=sc.u||'';$('pwd').value=sc.p||'';if(sc.s)$('srv').value=sc.s}}catch(e){}
 $('go').onclick=async function(){
   var u=$('usr').value.trim(),p=$('pwd').value,s=SERVER||$('srv').value;
@@ -249,9 +242,8 @@ async function loadTab(t){
 function api(a,extra){return fetch(sess.s+'/player_api.php?username='+enc(sess.u)+'&password='+enc(sess.p)+'&action='+a+(extra||'')).then(function(r){return r.json()})}
 
 function renderCats(){
-  var f=$('cq').value.toLowerCase(),h='';
+  var h='';
   catItems.forEach(function(c){
-    if(f&&c.name.toLowerCase().indexOf(f)<0)return;
     h+='<button class="cc'+(String(c.id)===String(curCat)?' on':'')+'" data-id="'+esc(c.id)+'"><span>'+esc(c.name)+'</span>'+(c.n!=null?'<em>'+c.n+'</em>':'')+'</button>';
   });
   $('cats').innerHTML=h||'<div style="color:#aaa;padding:6px">Sin categorías</div>';
@@ -264,7 +256,7 @@ $('cats').onclick=function(e){
 
 function selectCat(id){
   curCat=id;renderCats();
-  if(tab==='live'){chans=data.live.filter(function(c){return id===''||c.group===id});renderList();}
+  if(tab==='live'){renderList();}
   else{loadCat(id);}
 }
 
@@ -282,7 +274,9 @@ async function loadCat(id){
 
 function renderList(){
   var f=$('q').value.toLowerCase(),h='',tot=0;
-  chans.forEach(function(c,i){
+  var activeList=(tab==='live')?data.live.filter(function(c){return curCat===''||c.group===curCat}):chans;
+  
+  activeList.forEach(function(c,i){
     if(f&&c.name.toLowerCase().indexOf(f)<0)return;
     tot++;
     h+='<div class="ch'+(i===cur?' on':'')+'" data-i="'+i+'"><span class="nm">'+tot+'</span>'+(c.logo?'<img src="'+esc(c.logo)+'">':'<img alt="">')+'<div class="nx">'+esc(c.name)+'</div><span class="st" data-i="'+i+'">☆</span></div>';
@@ -291,12 +285,13 @@ function renderList(){
 }
 
 $('q').oninput=renderList;
-$('cq').oninput=renderCats;
 
 $('list').onclick=function(e){
   var st=e.target.closest('.st');
   if(st){
-    var c=chans[+st.dataset.i];
+    var idx=+st.dataset.i;
+    var activeList=(tab==='live')?data.live.filter(function(c){return curCat===''||c.group===curCat}):chans;
+    var c=activeList[idx];
     if(c){favs.push(c);sv('tv_favs',favs);alert('Añadido a favoritos');}
     return;
   }
@@ -305,12 +300,18 @@ $('list').onclick=function(e){
 };
 
 function play(i){
-  var c=chans[i];if(!c)return;cur=i;renderList();
+  var activeList=(tab==='live')?data.live.filter(function(c){return curCat===''||c.group===curCat}):chans;
+  var c=activeList[i];if(!c)return;cur=i;renderList();
   $('now').textContent=c.name;
   v.src=c.url;v.play().catch(function(){});
 }
 
-$('cp').onclick=function(){if(chans[cur])navigator.clipboard.writeText(chans[cur].url);alert('Enlace copiado');};
+$('cp').onclick=function(){
+  var activeList=(tab==='live')?data.live.filter(function(c){return curCat===''||c.group===curCat}):chans;
+  if(activeList[cur])navigator.clipboard.writeText(activeList[cur].url);
+  alert('Enlace copiado');
+};
 </script>
 </body>
-</html>
+  </html>
+  
