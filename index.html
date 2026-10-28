@@ -60,7 +60,7 @@ main{max-width:1000px;margin:0 auto;padding:12px}
 .im img{width:100%;height:100%;object-fit:cover;display:block}
 .im.lg img{object-fit:contain;padding:14px}
 .tt{margin-top:6px;font-size:12px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-/* LISTAS: pantalla fija, la lista se desplaza por dentro */
+/* LISTAS: Estilo IPTV - Izquierda lista, Derecha reproductor */
 #lv{display:flex;flex-direction:column;height:calc(100vh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100dvh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
 .bar{display:flex;align-items:center;gap:10px}
 .bar b{font-size:17px;white-space:nowrap}
@@ -70,9 +70,9 @@ main{max-width:1000px;margin:0 auto;padding:12px}
 #cbar{display:flex;gap:8px;align-items:center;margin:10px 0}
 #cbar .ghost{font-size:20px;line-height:1;padding:8px 16px}
 #cname{flex:1;min-width:0;background:var(--sub);color:#fff;border:1px solid #33364a;border-radius:10px;padding:10px 12px;font:inherit;font-weight:600;font-size:16px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#body{flex:1;min-height:0;display:flex;gap:14px}
+#body{flex:1;min-height:0;display:flex;gap:14px;flex-direction:row-reverse;} /* Reproductor a la derecha, lista a la izquierda */
 #left{flex:1 1 56%;min-width:0;display:flex;flex-direction:column;min-height:0}
-#right{flex:0 0 40%;min-width:0;display:none;flex-direction:column;overflow-y:auto}
+#right{flex:0 0 40%;min-width:0;display:flex;flex-direction:column;overflow-y:auto}
 #lv.withpv #right{display:flex}
 @media (orientation:portrait){
   #body{flex-direction:column}
@@ -201,7 +201,6 @@ button:focus-visible,.tile:focus-visible,.hc:focus-visible,.pc:focus-visible,.ch
   #tabs button{white-space:nowrap;padding:7px 10px}
   #list.grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
 }
-
 </style>
 </head>
 <body>
@@ -259,17 +258,11 @@ button:focus-visible,.tile:focus-visible,.hc:focus-visible,.pc:focus-visible,.ch
       <button class="ghost" id="cnext">›</button>
     </div>
     <div id="body">
-      <div id="left">
-        <input id="q" type="search" placeholder="Buscar…">
-        <button id="back" class="lnk hide">← Volver a la lista</button>
-        <div id="msg"></div>
-        <div id="list"></div>
-      </div>
+      <!-- LADO DERECHO: Reproductor y controles -->
       <div id="right">
         <div id="pv"><video id="v" controls playsinline autoplay></video></div>
         <div id="now">Elige un canal para empezar</div>
         <div class="hint hide" id="pvh">Toca la pantalla para verla en grande. Atrás para volver.</div>
-        <button id="cp" class="lnk" style="text-align:left;margin:0 0 8px 2px">Copiar enlace del canal</button>
         <div class="card hide" id="m3ubox">
           <textarea id="txt" placeholder="Pega aquí el contenido de tu lista M3U (#EXTM3U ...)"></textarea>
           <div class="row">
@@ -277,6 +270,13 @@ button:focus-visible,.tile:focus-visible,.hc:focus-visible,.pc:focus-visible,.ch
             <label class="btn">Subir archivo<input id="file" type="file" accept=".m3u,.m3u8,.txt" hidden></label>
           </div>
         </div>
+      </div>
+      <!-- LADO IZQUIERDO: Lista de canales / carpetas / buscador -->
+      <div id="left">
+        <input id="q" type="search" placeholder="Buscar…">
+        <button id="back" class="lnk hide">← Volver a la lista</button>
+        <div id="msg"></div>
+        <div id="list"></div>
       </div>
     </div>
   </section>
@@ -291,10 +291,7 @@ button:focus-visible,.tile:focus-visible,.hc:focus-visible,.pc:focus-visible,.ch
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.8/hls.min.js"></script>
 <script>
-/* ===== CONFIGURACIÓN =====
-   Dirección de tu servicio (formato Xtream: usuario/contraseña).
-   Si la dejas vacía, la pantalla de login pedirá el servidor. */
-var SERVER = ""; // Deja vacío para escribir el servidor de tu proveedor en el inicio.
+var SERVER = ""; 
 
 var $=function(i){return document.getElementById(i)};
 var v=$('v'),chans=[],hls=null,cur=-1,sess=null,seriesPrev=null,tab='live',lim=100,epMode=false;
@@ -331,7 +328,7 @@ function syncPv(){if(NP&&pvOn&&!pvFull){NP.place(pvRect()).catch(function(){})}}
 function pvStop(){if(NP&&pvOn){pvOn=false;pvFull=false;NP.hidePreview().catch(function(){})}}
 function previewNative(c){var r=pvRect();
   NP.preview({url:c.url,x:r.x,y:r.y,w:r.w,h:r.h}).then(function(){pvOn=true})
-    .catch(function(e){$('now').textContent='No se pudo abrir la vista previa: '+(e&&e.message?e.message:e)})}
+    .catch(function(e){$('now').textContent='No se pudo abrir la vista previa: '+(e&&e.message?e.message:e.toString())})}
 if(NP&&NP.addListener){
   NP.addListener('tap',function(){pvFull=!pvFull;NP.fullscreen({on:pvFull}).catch(function(){});if(!pvFull)setTimeout(syncPv,350)});
   NP.addListener('fullscreen',function(e){pvFull=!!(e&&e.on);if(!pvFull)setTimeout(syncPv,350)});
@@ -365,49 +362,96 @@ $('home').onclick=function(e){
   if(c.series){showList();loadTab('favs');openSeries(c);return}
   chans=[c];cur=-1;if(!NP)showList();play(0);renderHome()};
 
-/* ---- Login (API Xtream) ---- */
-$('srv').classList.remove('hide');
-try{var sc=JSON.parse(localStorage.getItem('tv_cred')||'null');
-  if(sc){$('usr').value=sc.u||'';$('pwd').value=sc.p||'';if(sc.s)$('srv').value=sc.s}}catch(e){}
-$('go').onclick=async function(){
-  var u=$('usr').value.trim(),p=$('pwd').value,s=$('srv').value.trim()||SERVER;
-  $('err').textContent='';
-  if(!u||!p||!s.trim()){$('err').textContent='Completa todos los datos.';return}
-  s=norm(s);var b=$('go');b.disabled=true;b.textContent='Entrando…';
+/* ---- Función para iniciar sesión y recuperar sesión guardada ---- */
+async function iniciarSesion(u, p, s, recordar) {
+  s = norm(s);
+  var q = '?username=' + enc(u) + '&password=' + enc(p);
+  var d = await (await fetch(s + '/player_api.php' + q)).json();
+  if(!d.user_info || d.user_info.auth == 0) throw new Error('Usuario o contraseña incorrectos.');
+  
+  var cats = {};
   try{
-    var q='?username='+enc(u)+'&password='+enc(p);
-    var d=await (await fetch(s+'/player_api.php'+q)).json();
-    if(!d.user_info||d.user_info.auth==0)throw new Error('Usuario o contraseña incorrectos.');
-    var cats={};
-    try{(await (await fetch(s+'/player_api.php'+q+'&action=get_live_categories')).json()).forEach(function(c){cats[c.category_id]=c.category_name})}catch(e){}
-    var ls=await (await fetch(s+'/player_api.php'+q+'&action=get_live_streams')).json();
-    var live=ls.map(function(c){
-      var ext=(c.container_extension||'').replace(/^\\./,'') || 'ts';
-      var base=s+'/live/'+enc(u)+'/'+enc(p)+'/'+c.stream_id;
-      return{name:c.name,group:cats[c.category_id]||'',logo:c.stream_icon||'',
-        url:base+'.'+ext, alternatives:[base+'.m3u8',base+'.ts',base+'.mp4']};
-    });
-    try{if($('rem').checked)localStorage.setItem('tv_cred',JSON.stringify({u:u,p:p,s:s}));else localStorage.removeItem('tv_cred')}catch(e){}
-    sess={s:s,u:u,p:p};data={live:live,vod:null,series:null};catsCache={};strCache={};
-    $('tabs').classList.remove('hide');$('m3ubox').classList.add('hide');
-    show(true);showHome();
-  }catch(e){
-    $('err').textContent=(e&&e.message&&e.message.indexOf('incorrectos')>0)?e.message:'No se pudo conectar. Revisa el servidor, tus datos o tu conexión.';
+    (await (await fetch(s + '/player_api.php' + q + '&action=get_live_categories')).json()).forEach(function(c){cats[c.category_id] = c.category_name});
+  }catch(e){}
+  
+  var ls = await (await fetch(s + '/player_api.php' + q + '&action=get_live_streams')).json();
+  var live = ls.map(function(c){
+    var ext = (c.container_extension || '').replace(/^\./,'') || 'ts';
+    var base = s + '/live/' + enc(u) + '/' + enc(p) + '/' + c.stream_id;
+    return {name: c.name, group: cats[c.category_id] || '', logo: c.stream_icon || '',
+      url: base + '.' + ext, alternatives: [base + '.m3u8', base + '.ts', base + '.mp4']};
+  });
+  
+  sess = {s: s, u: u, p: p};
+  data = {live: live, vod: null, series: null};
+  catsCache = {}; strCache = {};
+  
+  try{
+    if(recordar) {
+      localStorage.setItem('tv_cred', JSON.stringify({u: u, p: p, s: s}));
+      localStorage.setItem('tv_active_sess', JSON.stringify(sess));
+    } else {
+      localStorage.removeItem('tv_cred');
+      localStorage.removeItem('tv_active_sess');
+    }
+  }catch(e){}
+  
+  $('tabs').classList.remove('hide');
+  $('m3ubox').classList.add('hide');
+  show(true);
+  showHome();
+}
+
+$('srv').classList.remove('hide');
+
+// Intentar restaurar sesión activa o credenciales guardadas automáticamente al abrir la app
+try{
+  var activeSess = JSON.parse(localStorage.getItem('tv_active_sess') || 'null');
+  var sc = JSON.parse(localStorage.getItem('tv_cred') || 'null');
+  if(activeSess && activeSess.u && activeSess.s) {
+    sess = activeSess;
+    // Precargar datos rápidos en segundo plano o iniciar directamente
+    iniciarSesion(activeSess.u, activeSess.p, activeSess.s, true).catch(function(){});
+  } else if(sc){
+    $('usr').value = sc.u || '';
+    $('pwd').value = sc.p || '';
+    if(sc.s) $('srv').value = sc.s;
   }
-  b.disabled=false;b.textContent='Login';
+}catch(e){}
+
+$('go').onclick = async function(){
+  var u = $('usr').value.trim(), p = $('pwd').value, s = $('srv').value.trim() || SERVER;
+  $('err').textContent = '';
+  if(!u || !p || !s.trim()){$('err').textContent = 'Completa todos los datos.'; return}
+  var b = $('go'); b.disabled = true; b.textContent = 'Entrando…';
+  try{
+    await iniciarSesion(u, p, s, $('rem').checked);
+  }catch(e){
+    $('err').textContent = (e && e.message && e.message.indexOf('incorrectos') > 0) ? e.message : 'No se pudo conectar. Revisa el servidor, tus datos o tu conexión.';
+  }
+  b.disabled = false; b.textContent = 'INICIAR SESIÓN';
 };
-$('pwd').onkeydown=function(e){if(e.key==='Enter')$('go').click()};
-$('out').onclick=function(){
-  pvStop();closePicker();
-  if(hls){hls.destroy();hls=null}v.pause();v.removeAttribute('src');
-  chans=[];cur=-1;sess=null;data={live:null,vod:null,series:null};
-  try{localStorage.removeItem('tv_cred')}catch(e){}
-  $('pwd').value='';$('home').classList.remove('hide');$('lv').classList.add('hide');show(false)};
-$('m3u').onclick=function(){
-  pvStop();sess=null;tab='live';lim=100;epMode=false;chans=[];curCat='';catIdx=-1;catItems=[];
-  $('tabs').classList.add('hide');$('cbar').classList.add('hide');$('back').classList.add('hide');$('m3ubox').classList.remove('hide');
+
+$('pwd').onkeydown = function(e){if(e.key === 'Enter') $('go').click()};
+
+$('out').onclick = function(){
+  pvStop(); closePicker();
+  if(hls){hls.destroy(); hls = null} v.pause(); v.removeAttribute('src');
+  chans = []; cur = -1; sess = null; data = {live: null, vod: null, series: null};
+  try{
+    localStorage.removeItem('tv_cred');
+    localStorage.removeItem('tv_active_sess');
+  }catch(e){}
+  $('pwd').value = ''; $('home').classList.remove('hide'); $('lv').classList.add('hide'); show(false);
+};
+
+$('m3u').onclick = function(){
+  pvStop(); sess = null; tab = 'live'; lim = 100; epMode = false; chans = []; curCat = ''; catIdx = -1; catItems = [];
+  try{localStorage.removeItem('tv_active_sess');}catch(e){}
+  $('tabs').classList.add('hide'); $('cbar').classList.add('hide'); $('back').classList.add('hide'); $('m3ubox').classList.remove('hide');
   $('lv').classList.add('withpv');
-  $('sec').textContent='Lista M3U';$('msg').textContent='';show(true);showList();render()};
+  $('sec').textContent = 'Lista M3U'; $('msg').textContent = ''; show(true); showList(); render();
+};
 
 /* ---- Lista M3U manual ---- */
 function parse(t){var out=[],L=t.split(/\r?\n/),m=null;
@@ -436,6 +480,7 @@ function render(){
   if(tot>n)h+='<button id="more" class="lnk" style="width:100%;padding:12px;grid-column:1/-1">Mostrar más ('+(tot-n)+' restantes)</button>';
   $('list').className=grid?'grid':'';
   $('list').innerHTML=h||(chans.length?'<div style="color:#8a8f9a;padding:8px">Sin resultados.</div>':'')}
+
 function play(i){var c=chans[i];if(!c)return;cur=i;addRec(c);$('now').textContent='Reproduciendo: '+c.name;render();
   var lvOn=!$('lv').classList.contains('hide'),pvOk=$('lv').classList.contains('withpv');
   if(NP){
@@ -443,6 +488,7 @@ function play(i){var c=chans[i];if(!c)return;cur=i;addRec(c);$('now').textConten
     pvStop();
     NP.play({url:c.url,title:c.name}).catch(function(e){$('now').textContent='No se pudo abrir el reproductor: '+(e&&e.message?e.message:e)});return}
   webPlay(c)}
+
 function webPlay(c){
   if(hls){hls.destroy();hls=null}
   v.onerror=null;v.onplaying=null;v.onwaiting=null;
@@ -451,41 +497,28 @@ function webPlay(c){
   var attempt=0,failed=false;
   function tryUrl(){
     if(attempt>=urls.length){
-      $('now').textContent='No se pudo reproducir. Puede ser el formato, CORS del servidor o un enlace no válido.';
+      $('now').textContent='No se pudo reproducir. Puede ser el formato o un enlace no válido.';
       return;
     }
     var url=urls[attempt++];
     if(hls){hls.destroy();hls=null}
     v.pause();v.removeAttribute('src');v.load();
-    v.onerror=function(){
-      if(failed)return;
-      failed=true;
-      tryUrl();
-    };
-    v.onplaying=function(){
-      failed=true;
-      $('now').textContent='Reproduciendo: '+c.name;
-    };
+    v.onerror=function(){if(failed)return;failed=true;tryUrl();};
+    v.onplaying=function(){failed=true;$('now').textContent='Reproduciendo: '+c.name;};
     var isHls=/\.m3u8(?:$|\?)/i.test(url)||/\/hls|playlist/i.test(url);
     if(isHls&&window.Hls&&Hls.isSupported()){
       hls=new Hls({enableWorker:true});
       hls.loadSource(url);hls.attachMedia(v);
       hls.on(Hls.Events.MANIFEST_PARSED,function(){v.play().catch(function(){})});
-      hls.on(Hls.Events.ERROR,function(ev,d){
-        if(d.fatal&&!failed){failed=true;if(hls){hls.destroy();hls=null}tryUrl()}
-      });
+      hls.on(Hls.Events.ERROR,function(ev,d){if(d.fatal&&!failed){failed=true;if(hls){hls.destroy();hls=null}tryUrl()}});
     }else{
       v.src=url;
       var p=v.play();
-      if(p&&p.catch)p.catch(function(){
-        // En móviles, el usuario puede necesitar tocar el botón Play.
-        $('now').textContent='Toca ▶ en el reproductor para iniciar: '+c.name;
-      });
+      if(p&&p.catch)p.catch(function(){$('now').textContent='Toca ▶ en el reproductor para iniciar: '+c.name;});
     }
   }
   tryUrl();
 }
-$('cp').onclick=function(){var c=chans[cur];if(!c){$('now').textContent='Primero elige un canal.';return}try{navigator.clipboard.writeText(c.url);$('cp').textContent='¡Copiado!'}catch(e){prompt('Enlace:',c.url)}setTimeout(function(){$('cp').textContent='Copiar enlace del canal'},1500)};
 
 /* ---- Secciones y carpetas ---- */
 async function api(a,extra){
@@ -495,7 +528,7 @@ async function api(a,extra){
   var ct=(r.headers.get('content-type')||'').toLowerCase();
   if(ct.indexOf('json')<0){
     var tx=await r.text();
-    try{return JSON.parse(tx)}catch(e){throw new Error('El servidor no devolvió JSON. Revisa la dirección del servidor.')}
+    try{return JSON.parse(tx)}catch(e){throw new Error('El servidor no devolvió JSON.')}
   }
   return r.json();
 }
