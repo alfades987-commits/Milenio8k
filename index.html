@@ -21,7 +21,7 @@ body{background:radial-gradient(ellipse at 50% -15%,#321013 0%,#0b0b0e 42%,#0708
 
 /* LOGIN */
 #login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;gap:24px;overflow-y:auto}
-.logo text-align:center}
+.logo{text-align:center}
 .logo img{max-width:320px;filter:drop-shadow(0 0 20px rgba(229,9,20,.18))}
 .logo .t{font-size:56px;font-weight:700;line-height:1;background:linear-gradient(180deg,#ffe4a0,#c99a38);-webkit-background-clip:text;background-clip:text;color:transparent}
 .logo .s{display:inline-block;margin-top:6px;font-size:40px;font-weight:700;color:#e50914;letter-spacing:4px}
@@ -68,7 +68,8 @@ main{width:100vw;height:100vh;display:flex;flex-direction:column;padding:12px 16
 /* COLUMNA IZQUIERDA: CATEGORÍAS Y CANALES */
 .left-columns{flex:0 0 480px;display:flex;gap:10px;min-height:0}
 .col-cats, .col-items{flex:1;display:flex;flex-direction:column;gap:8px;min-height:0;background:#151519;border:1px solid #373239;border-radius:10px;padding:8px}
-.search-box{width:100%;background:#0c0d10;color:#f5f5f5;border:1px solid #39353b;border-radius:8px;padding:8px 10px;font:inherit;flex-shrink:0;font-size:12px}
+.search-row{display:flex;gap:6px;flex-shrink:0}
+.search-box{width:100%;background:#0c0d10;color:#f5f5f5;border:1px solid #39353b;border-radius:8px;padding:8px 10px;font:inherit;font-size:12px}
 .list-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
 
 .cc{width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:0;color:#cfd4e0;padding:8px 10px;border-radius:6px;cursor:pointer;text-align:left;font:inherit}
@@ -155,7 +156,10 @@ main{width:100vw;height:100vh;display:flex;flex-direction:column;padding:12px 16
       <!-- COLUMNA IZQUIERDA: CATEGORÍAS + CANALES -->
       <div class="left-columns">
         <div class="col-cats">
-          <input id="cq" class="search-box" type="search" placeholder="Buscar categoría...">
+          <div class="search-row">
+            <input id="cq" class="search-box" type="search" placeholder="Buscar categoría...">
+            <button class="ghost" id="refreshBtn" title="Actualizar contenido">🔄</button>
+          </div>
           <div class="list-scroll" id="cats"></div>
         </div>
         <div class="col-items">
@@ -236,9 +240,10 @@ document.querySelectorAll('[data-go]').forEach(function(el){
   }
 });
 
-async function loadTab(t){
+async function loadTab(t, forceRefresh){
   tab=t;curCat='';catItems=[];chans=[];$('q').value='';$('cq').value='';
   document.querySelectorAll('#tabs button[data-t]').forEach(function(b){b.classList.toggle('on',b.dataset.t===t)});
+  if(forceRefresh){catsCache={};strCache={};if(t==='live'){try{var q='?username='+enc(sess.u)+'&password='+enc(sess.p);var ls=await(await fetch(sess.s+'/player_api.php'+q+'&action=get_live_streams')).json();var cats={};try{(await(await fetch(sess.s+'/player_api.php'+q+'&action=get_live_categories')).json()).forEach(function(c){cats[c.category_id]=c.category_name})}catch(e){}data.live=ls.map(function(c){return{name:c.name,group:cats[c.category_id]||'',logo:c.stream_icon||'',url:sess.s+'/live/'+enc(sess.u)+'/'+enc(sess.p)+'/'+c.stream_id+'.m3u8'}})}catch(e){}}}
   if(t==='favs'){chans=favs;renderCats();renderList();return}
   if(t==='live'){
     var gs={},tot=data.live.length;data.live.forEach(function(c){if(c.group)gs[c.group]=(gs[c.group]||0)+1});
@@ -251,6 +256,10 @@ async function loadTab(t){
     renderCats();if(catItems.length)selectCat(catItems[0].id);
   }catch(e){}
 }
+
+$('refreshBtn').onclick=function(){
+  loadTab(tab, true);
+};
 
 function api(a,extra){return fetch(sess.s+'/player_api.php?username='+enc(sess.u)+'&password='+enc(sess.p)+'&action='+a+(extra||'')).then(function(r){return r.json()})}
 
@@ -280,10 +289,25 @@ async function loadCat(id){
   try{
     if(!strCache[k]){
       var ls=await api(tab==='vod'?'get_vod_streams':'get_series','&category_id='+enc(id));
-      strCache[k]=ls.map(function(c){return tab==='vod'?{name:c.name,logo:c.stream_icon||'',url:sess.s+'/movie/'+enc(sess.u)+'/'+enc(sess.p)+'/'+c.stream_id+'.mp4'}:{name:c.name,logo:c.cover||'',series:c.series_id}});
+      if(tab==='vod'){
+        strCache[k]=ls.map(function(c){return{name:c.name,logo:c.stream_icon||'',url:sess.s+'/movie/'+enc(sess.u)+'/'+enc(sess.p)+'/'+c.stream_id+'.'+(c.container_extension||'mp4')}});
+      }else{
+        strCache[k]=ls.map(function(c){return{name:c.name,logo:c.cover||'',series:c.series_id}});
+      }
     }
     chans=strCache[k];renderList();
   }catch(e){$('list').innerHTML='<div style="color:#f78;padding:10px">Error al cargar</div>'}
+}
+
+async function openSeries(c){
+  $('list').innerHTML='<div style="color:#aaa;padding:10px">Cargando episodios...</div>';
+  try{
+    var d=await api('get_series_info','&series_id='+c.series),ss=d.episodes||{},eps=[];
+    Object.keys(ss).sort(function(a,b){return a-b}).forEach(function(sn){(ss[sn]||[]).forEach(function(e){
+      eps.push({name:'T'+sn+' E'+e.episode_num+' · '+(e.title||''),group:c.name,logo:(e.info&&e.info.movie_image)||c.logo,
+        url:sess.s+'/series/'+enc(sess.u)+'/'+enc(sess.p)+'/'+e.id+'.'+(e.container_extension||'mp4')})})});
+    chans=eps;cur=-1;renderList();
+  }catch(e){$('list').innerHTML='<div style="color:#f78;padding:10px">Error al cargar episodios</div>'}
 }
 
 function renderList(){
@@ -311,14 +335,25 @@ $('list').onclick=function(e){
     return;
   }
   var row=e.target.closest('.ch');if(!row)return;
-  var i=+row.dataset.i;play(i);
+  var i=+row.dataset.i;
+  var activeList=(tab==='live')?data.live.filter(function(c){return curCat===''||c.group===curCat}):chans;
+  var c=activeList[i];
+  if(c&&c.series){openSeries(c);return;}
+  play(i);
 };
 
 function play(i){
   var activeList=(tab==='live')?data.live.filter(function(c){return curCat===''||c.group===curCat}):chans;
   var c=activeList[i];if(!c)return;cur=i;renderList();
   $('now').textContent=c.name;
-  v.src=c.url;v.play().catch(function(){});
+  
+  if(hls){hls.destroy();hls=null}
+  if(window.Hls&&Hls.isSupported()&&/\.m3u8|\/hls|playlist/i.test(c.url)){
+    hls=new Hls();hls.loadSource(c.url);hls.attachMedia(v);
+    hls.on(Hls.Events.MANIFEST_PARSED,function(){v.play().catch(function(){})});
+  }else{
+    v.src=c.url;v.play().catch(function(){});
+  }
 }
 
 $('cp').onclick=function(){
@@ -329,5 +364,5 @@ $('cp').onclick=function(){
 $('tabs').onclick=function(e){var b=e.target.closest('button[data-t]');if(b)loadTab(b.dataset.t)};
 </script>
 </body>
-           </html>
-           
+  </html>
+            
