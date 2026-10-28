@@ -9,6 +9,7 @@ cp index.html www/
 
 # 2) Proyecto Android
 npx cap add android
+unzip -oq glystv-res.zip -d android/app/src/main/res
 PKG=android/app/src/main/java/com/glystv/app
 MAN=android/app/src/main/AndroidManifest.xml
 
