@@ -110,7 +110,7 @@ video{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;display:bl
 <script>
 var SERVER = "https://aioplus.es:443";
 var $=function(i){return document.getElementById(i)};
-var v=$('v'), chans=[], currentTab='home';
+var v=$('v'), liveChans=[], movieChans=[], seriesChans=[], currentData=[];
 
 function showLogin(show){ $('login-screen').classList.toggle('hide', !show); }
 
@@ -123,12 +123,26 @@ $('go').onclick = async function(){
     var r=await fetch(SERVER+'/player_api.php'+q); var d=await r.json();
     if(!d.user_info || d.user_info.auth==0) throw new Error('Datos incorrectos');
     
+    // Cargar TV en Vivo
     var ls = await (await fetch(SERVER+'/player_api.php'+q+'&action=get_live_streams')).json();
-    chans = ls.map(function(c){return {name:c.name, logo:c.stream_icon, url:SERVER+'/live/'+u+'/'+p+'/'+c.stream_id+'.m3u8'}});
+    liveChans = ls.map(function(c){return {name:c.name, logo:c.stream_icon, url:SERVER+'/live/'+u+'/'+p+'/'+c.stream_id+'.m3u8'}});
+
+    // Cargar Películas (VOD)
+    try {
+      var vs = await (await fetch(SERVER+'/player_api.php'+q+'&action=get_vod_streams')).json();
+      movieChans = vs.map(function(c){return {name:c.name, logo:c.stream_icon, url:SERVER+'/movie/'+u+'/'+p+'/'+c.stream_id+'.'+(c.container_extension||'mp4')}});
+    } catch(e) { movieChans = []; }
+
+    // Cargar Series
+    try {
+      var ss = await (await fetch(SERVER+'/player_api.php'+q+'&action=get_series')).json();
+      seriesChans = ss.map(function(c){return {name:c.name, logo:c.cover, url:''}}); // Las series requieren selección de temporada/episodio
+    } catch(e) { seriesChans = []; }
     
     showLogin(false);
-    renderGrid(chans.slice(0, 12), 'home-grid');
-    renderGrid(chans, 'main-grid');
+    currentData = liveChans;
+    renderGrid(liveChans.slice(0, 12), 'home-grid');
+    renderGrid(liveChans, 'main-grid');
   }catch(e){ $('err').textContent='Error de conexión o datos inválidos.'; }
   $('go').textContent='Iniciar Sesión';
 };
@@ -138,7 +152,7 @@ function renderGrid(data, containerId){
   data.forEach(function(c, i){
     h+='<div class="card-item" data-i="'+i+'"><img src="'+(c.logo||'')+'" alt=""><div class="card-info">'+c.name+'</div></div>';
   });
-  $(containerId).innerHTML = h || '<div style="color:var(--mu)">Sin elementos.</div>';
+  $(containerId).innerHTML = h || '<div style="color:var(--mu)">Sin elementos disponibles.</div>';
 }
 
 document.querySelectorAll('.menu-item[data-tab]').forEach(function(btn){
@@ -146,9 +160,14 @@ document.querySelectorAll('.menu-item[data-tab]').forEach(function(btn){
     document.querySelectorAll('.menu-item').forEach(function(b){b.classList.remove('active')});
     this.classList.add('active');
     var tab = this.dataset.tab;
+    
     $('view-home').classList.toggle('hide', tab !== 'home');
+    $('view-player').classList.add('hide');
     $('view-content').classList.toggle('hide', tab === 'home');
-    if(tab !== 'home') renderGrid(chans, 'main-grid');
+
+    if(tab === 'live') { currentData = liveChans; renderGrid(liveChans, 'main-grid'); }
+    else if(tab === 'movies') { currentData = movieChans; renderGrid(movieChans, 'main-grid'); }
+    else if(tab === 'series') { currentData = seriesChans; renderGrid(seriesChans, 'main-grid'); }
   };
 });
 
@@ -156,15 +175,15 @@ $('home-grid').onclick = $('main-grid').onclick = function(e){
   var card = e.target.closest('.card-item');
   if(!card) return;
   var idx = card.dataset.i;
-  var c = chans[idx];
-  if(!c) return;
+  var c = currentData[idx];
+  if(!c || !c.url) return;
   
   $('view-home').classList.add('hide');
   $('view-content').classList.add('hide');
   $('view-player').classList.remove('hide');
   $('now').textContent = 'Reproduciendo: ' + c.name;
   
-  if(window.Hls && Hls.isSupported()){
+  if(window.Hls && Hls.isSupported() && /\.m3u8/i.test(c.url)){
     var hls = new Hls(); hls.loadSource(c.url); hls.attachMedia(v);
     hls.on(Hls.Events.MANIFEST_PARSED, function(){ v.play(); });
   } else { v.src = c.url; v.play(); }
